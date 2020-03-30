@@ -1,15 +1,10 @@
-package org.arun.springoauth.config;
+package org.sinaure.instantsecurity.config;
 
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
-@Getter
-@Setter
 @Component
 @Configuration
 @ConfigurationProperties(prefix = "rest.security")
@@ -32,16 +27,36 @@ public class SecurityProperties {
     return corsConfiguration;
   }
 
-  @Getter
-  @Setter
-  public static class Cors {
 
-    private List<String> allowedOrigins;
-    private List<String> allowedMethods;
-    private List<String> allowedHeaders;
-    private List<String> exposedHeaders;
-    private Boolean allowCredentials;
-    private Long maxAge;
+  public boolean isEnabled() {
+    return enabled;
   }
 
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public String getApiMatcher() {
+    return apiMatcher;
+  }
+
+  public void setApiMatcher(String apiMatcher) {
+    this.apiMatcher = apiMatcher;
+  }
+
+  public Cors getCors() {
+    return cors;
+  }
+
+  public void setCors(Cors cors) {
+    this.cors = cors;
+  }
+
+  public String getIssuerUri() {
+    return issuerUri;
+  }
+
+  public void setIssuerUri(String issuerUri) {
+    this.issuerUri = issuerUri;
+  }
 }

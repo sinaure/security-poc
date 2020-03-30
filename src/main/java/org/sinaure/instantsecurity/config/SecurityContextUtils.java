@@ -7,7 +7,7 @@
  * It may not be copied, distributed or modified, in part or in whole,
  * by any means whatsoever, without the explicit written permission of World Fuel Services Corporation.
  */
-package org.arun.springoauth.config;
+package org.sinaure.instantsecurity.config;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,6 +1,6 @@
-package org.arun.springoauth.config;
+package org.sinaure.instantsecurity.config;
 
-import org.arun.springoauth.config.OAuth2RestTemplateConfigurer.ServiceAccountEnabled;
+import org.sinaure.instantsecurity.config.OAuth2RestTemplateConfigurer.ServiceAccountEnabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;

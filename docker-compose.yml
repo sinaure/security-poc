@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+  keycloak:
+    container_name: keycloak
+    image: jboss/keycloak:9.0.2
+    depends_on:
+      - postgres
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - PROXY_ADDRESS_FORWARDING=true
+      - DB_VENDOR=postgres
+      - DB_ADDR=postgres
+      - DB_DATABASE=${KEYCLOAK_DB_DATABASE}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - KEYCLOAK_IMPORT=/opt/jboss/keycloak/imports/instant-realm.json
+    command:
+      - "-b 0.0.0.0"
+      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./data/keycloak:/opt/jboss/keycloak/imports/  
+  postgres:
+    container_name: postgres
+    restart: 'always'
+    build: './docker/postgres'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - "POSTGRES_MULTIPLE_DATABASES=${KEYCLOAK_DB_DATABASE},${KEYCLOAK_DB_USER},${KEYCLOAK_DB_PASSWORD}:${INSTANT_DB_DATABASE},${INSTANT_DB_USER},${INSTANT_DB_PASSWORD}"
+      # not sure it is really necessary but it does not break anything ...
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/lib/postgresql/data
+  
+  vault:
+    container_name: vault
+    build:
+      context: ./docker/vault
+      dockerfile: Dockerfile
+    ports:
+      - 8200:8200
+    volumes:
+      - ./docker/vault/config:/vault/config
+      - ./docker/vault/policies:/vault/policies
+      - ./docker/vault/data:/vault/data
+      - ./docker/vault/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://${HOST}:8200
+    command: server -config=/vault/config/vault-config.json
+    cap_add:
+      - IPC_LOCK    

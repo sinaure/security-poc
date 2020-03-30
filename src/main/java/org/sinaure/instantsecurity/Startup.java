@@ -1,4 +1,4 @@
-package org.arun.springoauth;
+package org.sinaure.instantsecurity;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

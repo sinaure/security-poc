@@ -1,4 +1,4 @@
-package org.arun.springoauth.config;
+package org.sinaure.instantsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -60,8 +60,12 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers(securityProperties.getApiMatcher())
-        .authenticated();
+            .antMatchers("/api/*")
+            .hasAnyRole("SUPERADMIN")
+            .antMatchers("/api/v1/employees/*")
+            .hasAnyRole("EDITOR")
+            .anyRequest()
+            .permitAll();
 
   }
 
