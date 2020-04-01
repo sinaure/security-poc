@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.sinaure.instantsecurity.config.SecurityContextUtils;
 import org.sinaure.instantsecurity.model.RealmInstantApp;
 import org.sinaure.instantsecurity.services.AuthService;
@@ -41,12 +42,12 @@ public class KcController {
         return new ResponseEntity<RealmRepresentation>(kc.realms().realm(realm.getIdRealm()).toRepresentation(), HttpStatus.OK);
       }
       authService.createRealm(kc,realm);
-      return ResponseEntity.ok(kc.realms().realm(realm.getIdRealm()).toRepresentation());
+
     } catch(Exception e){
       logger.error(e.getMessage());
 
     }
-    return new ResponseEntity<RealmRepresentation>(new RealmRepresentation(), HttpStatus.UNAUTHORIZED);
+    return ResponseEntity.ok(kc.realms().realm(realm.getIdRealm()).toRepresentation());
   }
   @PostMapping(path = "/editor/realm/{realmId}")
   public ResponseEntity<ClientRepresentation> createClient(@PathVariable String realmId , @RequestBody ClientRepresentation clientRepresentation) {
@@ -57,20 +58,20 @@ public class KcController {
         logger.error("realm {} does not exist! create it first",realmId);
         return new ResponseEntity<ClientRepresentation>(new ClientRepresentation(), HttpStatus.NOT_FOUND);
       }
-      authService.createClient(kc,realmId,clientRepresentation,new String[]{"USER"});
-      return ResponseEntity.ok(kc.realms().realm(realmId).clients().findByClientId(clientRepresentation.getClientId()).get(0));
+      authService.createClient(kc,realmId,clientRepresentation,clientRepresentation.getDefaultRoles());
+
     } catch(Exception e){
       e.printStackTrace();
       logger.error(e.getMessage());
     }
-    return new ResponseEntity<ClientRepresentation>(new ClientRepresentation(), HttpStatus.UNAUTHORIZED);
+    return ResponseEntity.ok(kc.realms().realm(realmId).clients().findByClientId(clientRepresentation.getClientId()).get(0));
   }
   @PostMapping(path = "/editor/realm/{realmId}/client/{clientId}")
-  public ResponseEntity<Set<String>> createUser() {
+  public ResponseEntity<Set<String>> createUser(@RequestBody UserRepresentation userRepresentation) {
     //TODO
     return ResponseEntity.ok(SecurityContextUtils.getUserRoles());
   }
-  @GetMapping(path = "/editor/realm/{realmId}/client/{clientId}")
+  @GetMapping(path = "/app/realm/{realmId}/client/{clientId}")
   public ResponseEntity<Set<String>> listUsers() {
     //TODO
     return ResponseEntity.ok(SecurityContextUtils.getUserRoles());

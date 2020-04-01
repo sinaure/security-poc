@@ -129,6 +129,7 @@ public class AuthServiceImpl implements AuthService {
 			rolesRepresentation.setClient(clientRolesRepr);
 			RealmRepresentation realmRepr = kc.realms().realm(realm).toRepresentation();
 			realmRepr.setRoles(rolesRepresentation);
+			realmRepr.setDefaultRoles(Arrays.asList(clientRoles));
 			kc.realms().realm(realm).update(realmRepr);
 		}
 	}

@@ -27,13 +27,13 @@ public abstract class AbstractKeycloakTest {
 	protected static String webOrigins = root;
 
 //	#APP LEVEL
-    protected static String[] appRoles = {"USER"};
-	protected static String pubKey1 = "";
+    protected static String[] appRoles = {"USER","uma_authorization"};
+	protected static String pubKey1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh1OC3oB00hbDLUfL5/0mkYwAs3A2WuQMtmkegHnYGumrr8CE/Mwcg9XzdQpuPhlLpWWl1v48PvvHCZIsUwUseMRXvDabEXh5sPYdr7bwLDZUVZJ+qsc08SWYGzrhwlD/HSxknWJJKEK6Mi6BfQRYpsS/XmX2o11ixvWlDd7qUHP/8fsEWW1ZSH2R5RcbRzFL7mthW3aCTG09reyZq4YjZUz9k5xugHyZ1w5RzxHkDGlKbtfEEysWt8myqccGbiYqh0bHclX0Yt5mHcooEu3/EFN0+aL09rOOKJcfj/L+3Yr1hr2FVNGL0ej7YUCBTs7XjZks12+mr/svTYpLmnii7QIDAQAB";
 	protected static String realm_1 = "lime";
 	protected static String client_id_1 = "lime";
-	protected static String client_secret_1 = "6c64f5f7-8479-4558-9afb-20b5e6482f39";
-	protected static String pubKey2 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhSX3F2Zw0eOFAPa/5+aMi1Rc0teUZpMsG4ftLLAISNrz8iV4Rpqqk/summIp3EOuB0uoY3GT3UCxBOfk4r4p6ZLBcz+6fqirX1K8Ei7s/PldozJW/Gi2729WNl+Cp878Hgu6v3GcjQR7NquBfaMssS5o64CHNRZYE5Al/sfAIVL32EDwe5kdMdkVb4LfXTPmHH4ougjCmp0Dy6BxH0kNkvRsg8m8KNtDnRSwvBakw1DaKe5Y/4lheIUdHB4MZBvqo4+fEQj1ZO9QRk2Kb1U5oYPzmtGRcKzeVcGswfx3gCSeab6pgXCOMUkjV9muvNJ3Q8tZjFG8eiOfOKrguONGlQIDAQAB";
-	protected static String realm_2 = "lime";
+	protected static String client_secret_1 = "00c66dbd-42d7-4e16-bae5-1211deee0f81";
+	protected static String pubKey2 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh1OC3oB00hbDLUfL5/0mkYwAs3A2WuQMtmkegHnYGumrr8CE/Mwcg9XzdQpuPhlLpWWl1v48PvvHCZIsUwUseMRXvDabEXh5sPYdr7bwLDZUVZJ+qsc08SWYGzrhwlD/HSxknWJJKEK6Mi6BfQRYpsS/XmX2o11ixvWlDd7qUHP/8fsEWW1ZSH2R5RcbRzFL7mthW3aCTG09reyZq4YjZUz9k5xugHyZ1w5RzxHkDGlKbtfEEysWt8myqccGbiYqh0bHclX0Yt5mHcooEu3/EFN0+aL09rOOKJcfj/L+3Yr1hr2FVNGL0ej7YUCBTs7XjZks12+mr/svTYpLmnii7QIDAQAB";
+	protected static String realm_2 = "zou";
 	protected static String client_id_2 = "zou";
 	protected static String client_secret_2 = "8f697911-edee-4f28-a7f9-e88382e68c14";
 
