@@ -48,7 +48,7 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
   private AuthService authService;
 
   @Override
-  public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+  public void configure(ResourceServerSecurityConfigurer resources){
     resources.resourceId(resourceServerProperties.getResourceId());
   }
 
@@ -66,9 +66,9 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeRequests()
-            .antMatchers("/api/v1/instant/editor*")
+            .antMatchers("/api/v1/instant*")
             .hasAnyAuthority("ROLE_SUPERADMIN")
-            .antMatchers("/api/v1/instant/app*")
+            .antMatchers("/api/v1/app*")
             .hasAnyAuthority("ROLE_USER")
             .anyRequest()
             .permitAll();
@@ -89,7 +89,7 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
     return new JwtAccessTokenCustomizer(mapper);
   }
 
-  @Bean
+  @Bean(name = "kc")
   public Keycloak keycloakAdmin(){
     String localhost = "http://localhost:8081";
     String client_id = "admin-cli";
@@ -97,5 +97,13 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
     String admin_password = "9vJaTwrJnKS6";
     String realm = "master";
     return  authService.getKeycloakUser(localhost, realm, client_id, admin, admin_password);
+  }
+  @Bean(name = "kc_lime")
+  public Keycloak keycloakLime(){
+    String localhost = "http://localhost:8081";
+    String client_id = "lime";
+    String secret = "d686dc95-c1b9-4758-9036-e433e3ecb860";
+    String realm = "lime";
+    return  authService.getKeycloakClient(localhost, realm, client_id, secret);
   }
 }

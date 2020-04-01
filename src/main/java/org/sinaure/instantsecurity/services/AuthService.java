@@ -14,14 +14,15 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface AuthService {
-	public TokenSet getToken(String URI, String username , String password, String client_id) throws UserUnauthorizedException;
-	public TokenSet getTokenClient(String URI , String client_id, String client_credential) throws UserUnauthorizedException;
-	public TokenSet refreshToken(String URI, String refresh_token, String client_id) throws UserUnauthorizedException ;
-	public Keycloak getKeycloakClient( String host, String realm,String clientId, String secret);
-	public Keycloak getKeycloakUser(String host, String realm, String clientId, String user, String password);
-	public AccessToken decodeJWT(String host, String jwt, String realm, String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, VerificationException;
+	TokenSet getToken(String URI, String username , String password, String client_id) throws UserUnauthorizedException;
+	TokenSet getTokenClient(String URI , String client_id, String client_credential) throws UserUnauthorizedException;
+	TokenSet refreshToken(String URI, String refresh_token, String client_id) throws UserUnauthorizedException ;
+	Keycloak getKeycloakClient( String host, String realm,String clientId, String secret);
+	Keycloak getKeycloakUser(String host, String realm, String clientId, String user, String password);
+	AccessToken decodeJWT(String host, String jwt, String realm, String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, VerificationException;
+	boolean createUser(Keycloak kc, String realm, String clientId,  UserRepresentation userRepresentation);
 
-	public List<RoleRepresentation> getRoleRepresentationList(String[] defaultRoles);
-	public void createRealm(Keycloak kc, RealmInstantApp realm);
-	public void createClient(Keycloak kc, String realm, ClientRepresentation clientRepresentation, String[] defaultRoles);
+	List<RoleRepresentation> getRoleRepresentationList(String[] defaultRoles);
+	void createRealm(Keycloak kc, RealmInstantApp realm);
+	void createClient(Keycloak kc, String realm, ClientRepresentation clientRepresentation, String[] defaultRoles);
 }

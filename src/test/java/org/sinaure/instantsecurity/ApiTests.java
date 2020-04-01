@@ -36,7 +36,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import static java.util.Arrays.asList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,13 +49,13 @@ public class ApiTests extends AbstractKeycloakTest{
   private AuthService authService;
   @Autowired
   private RestTemplate restTemplate;
-  //get TOKEN
-  static TokenSet tokenSet = null;
-  static String apiEndpointUsername = "http://localhost:8085/api/v1/instant/app/lime/user/name";
-  static String apiEndpointRealm = "http://localhost:8085/api/v1/instant/editor/realm";
 
-  static String apiEndpointInstantUserCreate = "http://localhost:8085/api/v1/instant/editor/realm/lime/client/lime";
-  static String apiEndpointApp = "http://localhost:8085/api/v1/instant/app/realm/lime/client/lime";
+  static TokenSet tokenSet = null;
+  static String apiEndpointUsername = "http://localhost:8085/api/v1/app/lime/user/name";
+  static String apiEndpointRealm = "http://localhost:8085/api/v1/instant/realm";
+
+  static String apiEndpointInstantUserCreate = "http://localhost:8085/api/v1/instant/realm/lime/client/lime";
+  static String apiEndpointApp = "http://localhost:8085/api/v1/app/realm/lime/client/lime";
   @Rule
   public ExpectedException exceptionRule = ExpectedException.none();
 
@@ -99,7 +101,7 @@ public class ApiTests extends AbstractKeycloakTest{
       logger.info("Resource realm : "+realm_1+" already exist -- SKIP creation");
     }
 
-    //2. create confidential CLIENT
+    //2. create confidential CLIENT on new realm
     ClientRepresentation clientRepresentation = new ClientRepresentation();
     clientRepresentation.setClientId(client_id_1);
     clientRepresentation.setSecret(client_secret_1);
@@ -111,14 +113,13 @@ public class ApiTests extends AbstractKeycloakTest{
     clientRepresentation.setAuthorizationServicesEnabled(true);
     clientRepresentation.setEnabled(true);
     clientRepresentation.setPublicClient(false);
-    clientRepresentation.setDefaultRoles(appRoles);
 
     logger.info(SecurityContextUtils.serializeObject(clientRepresentation));
 
     //check response from security REST API
     try {
       logger.info("performing POST to {}", apiEndpointRealm);
-      ResponseEntity<String> response = restTemplate.postForEntity(apiEndpointRealm+"/"+realm_instant,new HttpEntity<ClientRepresentation>(clientRepresentation,headers), String.class);
+      ResponseEntity<String> response = restTemplate.postForEntity(apiEndpointRealm+"/"+realm_1,new HttpEntity<ClientRepresentation>(clientRepresentation,headers), String.class);
       logger.info("response body:  {} ", response.getBody());
       Assert.assertNotNull(response.getBody());
     } catch (Exception e) {
@@ -153,23 +154,26 @@ public class ApiTests extends AbstractKeycloakTest{
   // use service account to login : USE THE CONFIDENTIAL CLIENT CREATED ON INSTANT REALM TO AUTHENTICATE (it have to stay there because of Pubkey)
   @Test
   @Order(3)
-  public void test3_performGetToProtectedInstantAPI() throws UserUnauthorizedException, InvalidKeySpecException, VerificationException, NoSuchAlgorithmException, IOException {
+  public void test3_performUserCreationToProtectedInstantAPI() throws UserUnauthorizedException, InvalidKeySpecException, VerificationException, NoSuchAlgorithmException, IOException {
 
     String keycloakUrl = keycloakhost + "/auth/realms/" + realm_instant + "/protocol/openid-connect/token";
-    tokenSet = authService.getTokenClient(keycloakUrl, client_id_1,client_secret_1 );
+    tokenSet = authService.getTokenClient(keycloakUrl, client_instant,client_instant_secret  );
     Assert.assertNotNull(tokenSet);
 
     logger.info(tokenSet.getAuthToken());
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Authorization", "Bearer " + tokenSet.getAuthToken());
     authService.decodeJWT(keycloakhost,tokenSet.getAuthToken(),realm_instant,pubKeyInstant);
     headers.set("Authorization", "Bearer " + tokenSet.getAuthToken());
     //CREATE users on App Realm
     UserRepresentation userRepresentation = new UserRepresentation();
     userRepresentation.setEnabled(true);
-    userRepresentation.setId("sdfsjf876df8s76fsfd7s8f6");
-    userRepresentation.setFirstName("jimmy");
-    userRepresentation.setLastName("roquay");
+    String username = "jroquay_"+RandomStringUtils.randomAlphanumeric(10);
+    userRepresentation.setUsername(username);
+    userRepresentation.setFirstName(username);
+    userRepresentation.setLastName(username);
+    userRepresentation.setEmail(username+"@instant.com");
+
+
     try {
       logger.info("performing POST to {}", apiEndpointInstantUserCreate);
       ResponseEntity<String> response = restTemplate.exchange(apiEndpointInstantUserCreate, HttpMethod.POST, new HttpEntity<Object>(userRepresentation,headers), String.class);

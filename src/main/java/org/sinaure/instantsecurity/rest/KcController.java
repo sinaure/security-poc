@@ -1,5 +1,6 @@
 package org.sinaure.instantsecurity.rest;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,19 +13,25 @@ import org.sinaure.instantsecurity.config.SecurityContextUtils;
 import org.sinaure.instantsecurity.model.RealmInstantApp;
 import org.sinaure.instantsecurity.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/instant")
+@RequestMapping("/api/v1/")
 public class KcController {
   static final Logger logger = LogManager.getLogger(KcController.class.getName());
   @Autowired
   private AuthService authService;
   @Autowired
+  @Qualifier("kc")
   private Keycloak kc;
+  @Autowired
+  @Qualifier("kc_lime")
+  private Keycloak kc_lime;
+
   @GetMapping(path = "/app/{app}/user/name")
   public ResponseEntity<String> getAuthorizedUserName(@PathVariable String app) {
     return ResponseEntity.ok(SecurityContextUtils.getUserName());
@@ -34,7 +41,12 @@ public class KcController {
   public ResponseEntity<Set<String>> getAuthorizedUserRoles(@PathVariable String app) {
     return ResponseEntity.ok(SecurityContextUtils.getUserRoles());
   }
-  @PostMapping(path = "/editor/realm")
+  @GetMapping(path = "/app/realm/{realmId}/client/{clientId}")
+  public ResponseEntity<List<UserRepresentation>> listUsers(@PathVariable String realmId) {
+    return ResponseEntity.ok(kc.realms().realm(realmId).users().list());
+  }
+
+  @PostMapping(path = "/instant/realm")
   public ResponseEntity<RealmRepresentation> createRealm(@RequestBody RealmInstantApp realm) {
     try{
       if(kc.realms().findAll().stream().filter(r -> r.getId().equalsIgnoreCase(realm.getIdRealm())).findFirst().isPresent()){
@@ -49,7 +61,7 @@ public class KcController {
     }
     return ResponseEntity.ok(kc.realms().realm(realm.getIdRealm()).toRepresentation());
   }
-  @PostMapping(path = "/editor/realm/{realmId}")
+  @PostMapping(path = "/instant/realm/{realmId}")
   public ResponseEntity<ClientRepresentation> createClient(@PathVariable String realmId , @RequestBody ClientRepresentation clientRepresentation) {
     //clients on created application specific realms just have USER role
 
@@ -66,14 +78,12 @@ public class KcController {
     }
     return ResponseEntity.ok(kc.realms().realm(realmId).clients().findByClientId(clientRepresentation.getClientId()).get(0));
   }
-  @PostMapping(path = "/editor/realm/{realmId}/client/{clientId}")
-  public ResponseEntity<Set<String>> createUser(@RequestBody UserRepresentation userRepresentation) {
-    //TODO
-    return ResponseEntity.ok(SecurityContextUtils.getUserRoles());
+  @PostMapping(path = "/instant/realm/{realmId}/client/{clientId}")
+  public ResponseEntity<UserRepresentation> createUser(@RequestBody UserRepresentation userRepresentation, @PathVariable String clientId, @PathVariable String realmId ) {
+    if(authService.createUser(kc_lime,realmId,clientId, userRepresentation)){
+      ResponseEntity.ok(userRepresentation);
+    }
+    return ResponseEntity.badRequest().body(new UserRepresentation());
   }
-  @GetMapping(path = "/app/realm/{realmId}/client/{clientId}")
-  public ResponseEntity<Set<String>> listUsers() {
-    //TODO
-    return ResponseEntity.ok(SecurityContextUtils.getUserRoles());
-  }
+
 }
