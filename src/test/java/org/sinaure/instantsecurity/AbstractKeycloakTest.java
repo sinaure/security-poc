@@ -15,10 +15,10 @@ public abstract class AbstractKeycloakTest {
 	protected static String master_password = "9vJaTwrJnKS6";
 
 	// INSTANT CLI --> access to REST API
-	protected static String pubKeyInstant = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhSX3F2Zw0eOFAPa/5+aMi1Rc0teUZpMsG4ftLLAISNrz8iV4Rpqqk/summIp3EOuB0uoY3GT3UCxBOfk4r4p6ZLBcz+6fqirX1K8Ei7s/PldozJW/Gi2729WNl+Cp878Hgu6v3GcjQR7NquBfaMssS5o64CHNRZYE5Al/sfAIVL32EDwe5kdMdkVb4LfXTPmHH4ougjCmp0Dy6BxH0kNkvRsg8m8KNtDnRSwvBakw1DaKe5Y/4lheIUdHB4MZBvqo4+fEQj1ZO9QRk2Kb1U5oYPzmtGRcKzeVcGswfx3gCSeab6pgXCOMUkjV9muvNJ3Q8tZjFG8eiOfOKrguONGlQIDAQAB";
+	protected static String pubKeyInstant = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlvSModu0JW/8lYTtg0Lo+c69WkcCmNipXUAJXae0czaqnpnLP8dufbt4LRNPdrJ4xcPzQ+qZKE2vwJpolYbfXdSKfBDRq/mwrCObX5qFqLAr4zvDBKIQnF4qlMZhigdxEdXD979xk7Q+kh3rG+G1jhf1wKvah9y7UkHeUyoSYyY64QQdi/ACXEho/S/zh85QN8vt8UshSuQZSLZP6HO/zUcWYVoZH/7kFxXPM/MX6Tc2cLPt6OiHvmEel1LXOBEB8JTJ2WwL+U5VRZrztNUT0pZc+D+b8rHucYHqzHFO5n5teuopntJtD3OH+pR3Bn3rBHFU6V8TxjIh8NnXTaax9QIDAQAB";
 	protected static String client_instant = "instant";
 	protected static String realm_instant = "instant";
-	protected static String[] instantRoles = {"app_editor","superadmin","uma_protection"};
+	protected static String[] instantRoles = {"SUPERADMIN"};
 
 	
 	protected static String client_instant_secret = "1bbf4c87-812c-4171-a9fa-16ade8380045";
@@ -27,8 +27,8 @@ public abstract class AbstractKeycloakTest {
 	protected static String webOrigins = root;
 
 //	#APP LEVEL
-
-	protected static String pubKey1 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhSX3F2Zw0eOFAPa/5+aMi1Rc0teUZpMsG4ftLLAISNrz8iV4Rpqqk/summIp3EOuB0uoY3GT3UCxBOfk4r4p6ZLBcz+6fqirX1K8Ei7s/PldozJW/Gi2729WNl+Cp878Hgu6v3GcjQR7NquBfaMssS5o64CHNRZYE5Al/sfAIVL32EDwe5kdMdkVb4LfXTPmHH4ougjCmp0Dy6BxH0kNkvRsg8m8KNtDnRSwvBakw1DaKe5Y/4lheIUdHB4MZBvqo4+fEQj1ZO9QRk2Kb1U5oYPzmtGRcKzeVcGswfx3gCSeab6pgXCOMUkjV9muvNJ3Q8tZjFG8eiOfOKrguONGlQIDAQAB";
+    protected static String[] appRoles = {"USER"};
+	protected static String pubKey1 = "";
 	protected static String realm_1 = "lime";
 	protected static String client_id_1 = "lime";
 	protected static String client_secret_1 = "6c64f5f7-8479-4558-9afb-20b5e6482f39";

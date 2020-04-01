@@ -9,8 +9,13 @@
  */
 package org.sinaure.instantsecurity.config;
 
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -65,5 +70,14 @@ public class SecurityContextUtils {
           .forEach(e -> roles.add(e.getAuthority()));
     }
     return roles;
+  }
+  private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
+  public static Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+    public JsonElement serialize(LocalDateTime src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(formatter.format(src));
+    }
+  }).setPrettyPrinting().create();
+  public static String serializeObject(Object o) {
+    return gson.toJson(o);
   }
 }

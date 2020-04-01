@@ -1,6 +1,9 @@
 package org.sinaure.instantsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.keycloak.admin.client.Keycloak;
+import org.sinaure.instantsecurity.services.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +44,9 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
     this.securityProperties = securityProperties;
   }
 
+  @Autowired
+  private AuthService authService;
+
   @Override
   public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
     resources.resourceId(resourceServerProperties.getResourceId());
@@ -60,10 +66,10 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
         .csrf()
         .disable()
         .authorizeRequests()
-            .antMatchers("/api/*")
-            .hasAnyRole("SUPERADMIN")
-            .antMatchers("/api/v1/employees/*")
-            .hasAnyRole("EDITOR")
+            .antMatchers("/api/v1/instant/editor*")
+            .hasAnyAuthority("ROLE_SUPERADMIN")
+            .antMatchers("/api/v1/instant/app*")
+            .hasAnyAuthority("ROLE_USER")
             .anyRequest()
             .permitAll();
 
@@ -81,5 +87,15 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
   @Bean
   public JwtAccessTokenCustomizer jwtAccessTokenCustomizer(ObjectMapper mapper) {
     return new JwtAccessTokenCustomizer(mapper);
+  }
+
+  @Bean
+  public Keycloak keycloakAdmin(){
+    String localhost = "http://localhost:8081";
+    String client_id = "admin-cli";
+    String admin = "keycloak";
+    String admin_password = "9vJaTwrJnKS6";
+    String realm = "master";
+    return  authService.getKeycloakUser(localhost, realm, client_id, admin, admin_password);
   }
 }

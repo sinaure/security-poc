@@ -16,6 +16,8 @@ import org.keycloak.common.VerificationException;
 import org.keycloak.common.util.Base64;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.*;
+import org.sinaure.instantsecurity.config.SecurityContextUtils;
+import org.sinaure.instantsecurity.model.RealmInstantApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -33,22 +35,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class AuthServiceImpl implements AuthService {
 	static final Logger logger = LogManager.getLogger(AuthServiceImpl.class.getName());
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
-	public static Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
-		public JsonElement serialize(LocalDateTime src, Type typeOfSrc, JsonSerializationContext context) {
-			return new JsonPrimitive(formatter.format(src));
-		}
-	}).setPrettyPrinting().create();
-	public static String serializeObject(Object o) {
-		return gson.toJson(o);
-	}
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -96,26 +88,49 @@ public class AuthServiceImpl implements AuthService {
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, VerificationException {
 		String issuer = host + "/auth/realms/" + realm;
 		AccessToken accessToken = RSATokenVerifier.verifyToken(jwt, getPubKey(publicKey), issuer);
-		logger.trace("decodedToken : {}", serializeObject(accessToken));
+		logger.info("decodedToken : {}", SecurityContextUtils.serializeObject(accessToken));
 		return accessToken;
 	}
 
 	@Override
-	public void createClient(Keycloak kc, String realm, String clientId, String secret, String redirectUri, String baseURL, String webOrigins, String[] defaultRoles) {
+	public List<RoleRepresentation> getRoleRepresentationList(String[] roles) {
+		List<RoleRepresentation> roleRepresentationList = new ArrayList<RoleRepresentation>();
+		for (String r: roles
+		) {
+			RoleRepresentation role = new RoleRepresentation();
+			role.setId(r);
+			role.setName(r);
+			roleRepresentationList.add(role);
+		}
+		return roleRepresentationList;
+	}
 
-		ClientRepresentation clientRepresentation = new ClientRepresentation();
-		clientRepresentation.setClientId(clientId);
-		clientRepresentation.setSecret(secret);
-		clientRepresentation.setRedirectUris(Arrays.asList(redirectUri));
-		clientRepresentation.setBaseUrl(baseURL);
-		clientRepresentation.setWebOrigins(Arrays.asList(webOrigins));
-		clientRepresentation.setDirectAccessGrantsEnabled(true);
-		clientRepresentation.setServiceAccountsEnabled(true);
-		clientRepresentation.setAuthorizationServicesEnabled(true);
-		clientRepresentation.setEnabled(true);
-		clientRepresentation.setPublicClient(false);
-		clientRepresentation.setDefaultRoles(defaultRoles);
-		kc.realms().realm(realm).clients().create(clientRepresentation);
+	@Override
+	public void createRealm(Keycloak kc, RealmInstantApp realm) {
+		RealmRepresentation realmRepresentation = new RealmRepresentation();
+		realmRepresentation.setId(realm.getIdRealm());
+		realmRepresentation.setRealm(realm.getRealm());
+		realmRepresentation.setEnabled(true);
+		RolesRepresentation rolesRepresentation = new RolesRepresentation();
+		if(realm.getRoles()!= null){
+			rolesRepresentation.setRealm(getRoleRepresentationList(realm.getRoles()));
+			realmRepresentation.setRoles(rolesRepresentation);
+		}
+		kc.realms().create(realmRepresentation);
+	}
+
+	@Override
+	public void createClient(Keycloak kc, String realm, ClientRepresentation clientRepresentation, String[] clientRoles) {
+		if(clientRoles.length>0){
+			Map<String,List<RoleRepresentation>> clientRolesRepr = new HashMap<String,List<RoleRepresentation>>();
+			clientRolesRepr.put(clientRepresentation.getClientId(),getRoleRepresentationList(clientRoles));
+			kc.realms().realm(realm).clients().create(clientRepresentation);
+			RolesRepresentation rolesRepresentation = kc.realms().realm(realm).toRepresentation().getRoles() != null ? kc.realms().realm(realm).toRepresentation().getRoles() : new RolesRepresentation();
+			rolesRepresentation.setClient(clientRolesRepr);
+			RealmRepresentation realmRepr = kc.realms().realm(realm).toRepresentation();
+			realmRepr.setRoles(rolesRepresentation);
+			kc.realms().realm(realm).update(realmRepr);
+		}
 	}
 
 	private static PublicKey getPubKey(String publicK)
@@ -190,6 +205,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 	}
+
 
 
 }
