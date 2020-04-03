@@ -1,12 +1,31 @@
-# spring-oauth2-keycloak-connector (Source code for Article published)
+# Oauth2
 
-Complete source code used to explain an article on Securing REST API using Keycloak and Spring Oauth2   
+Inspired from :
 
 https://medium.com/@bcarunmail/securing-rest-api-using-keycloak-and-spring-oauth2-6ddf3a1efcc2
 
- 
-To continue reading on how to Access a Secure REST API using Spring OAuth2RestTemplate, refer below article
+## 1. deploy containers
+import realms if needed (data/keycloak)
 
-https://medium.com/@bcarunmail/accessing-secure-rest-api-using-spring-oauth2resttemplate-ef18377e2e05
+## 2. run app Startup.java
 
-curl -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJOUjlQbzJ4WVdBVDg4WElZUmRuWnFNVDNJRUh2Y20zZzdEdUVhMzBCZ3BVIn0.eyJleHAiOjE1ODU1NjAzNDQsImlhdCI6MTU4NTU1NzM0NCwiYXV0aF90aW1lIjoxNTg1NTU3MTcwLCJqdGkiOiJhMjYzYmYxNC0zODI5LTQ4MzQtYjc2NC1jM2JjNTlkMjQ0MzYiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODEvYXV0aC9yZWFsbXMvaW5zdGFudCIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJhYTBmMGIxMi1jMzg4LTQ1MmEtOGQ5MS1mYzNkMmM2NzQ0ZGMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJpbnN0YW50Iiwic2Vzc2lvbl9zdGF0ZSI6IjM2NTA2YzVmLTBkMDktNGEzNS05MmQ2LWJjOTJiODRlYjAyOSIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo4MDg1Il0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJFRElUT1IiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJpbnN0YW50Ijp7InJvbGVzIjpbIkVESVRPUiIsInVtYV9wcm90ZWN0aW9uIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6ImF1cmVsaWFubyBzaW5hdHJhIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYXVyZWxpYW5vIiwibXlrZXkiOlsiRURJVE9SdW1hX3Byb3RlY3Rpb24iLCJFRElUT1JFRElUT1IiXSwiZ2l2ZW5fbmFtZSI6ImF1cmVsaWFubyIsImZhbWlseV9uYW1lIjoic2luYXRyYSJ9.AWvkDbyA7R2k00ZxDxvkRLQiMIfPWhyHcss-O62GXzk-hrQnqTvFKowWF4Ge7xShS4iC84Vt2083pcPfiIcggRFa1lA-2_-vtBJyWfc6vo256x8CGdtlYJVUkk3NQVenewo_w2GPBpo4jU1FfnwATtr4LSDP3NxVoPXKtCXY3CSa12ud6qsRCdEroalJDnCNcERa4lhB2N4EBhBtkMQuMz-b_lDbyUfIEAgD5Bcs_PR--S4PXTYSiwOzjoT3u9ncs0aEXo20Cl6VW2v3KPbVtS3pStI-EILhR8wt-n1ED6JFpNe5s1YgQ52dYgGdJ-H3cPamPbQIlJ7urzzUNIKOIw" http://localhost:8085/api/v1/employees/username
+## 3. run Junit test
+
+## 4. features:
+
+* token retrieval 
+* Programmatic creation/management of REALMS / CLIENTS / ROLES and USERS via Keycloack Admin Client
+* secured API via authentication rules i.e. kc ROLES (part of the API will be free, part will be restricted to INSTANT ADMIN CLIENT, part will be restricted to NETWORK CLIENT)
+
+## 5. TODO:
+* secrets and password retrieval from Vault instead of hardcoded in config files
+* per CLIENT RESOURCE based authorization 
+* Identity provider for GOOGLE / FB end user login 
+
+
+
+
+
+
+
+  
