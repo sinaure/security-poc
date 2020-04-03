@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
             logger.info("Couldn't create user. {}",result.getStatus());
             return false;
         }
-        logger.info("Response: {} ", SecurityContextUtils.serializeObject(result));
+        logger.info("Status: {} ", result.getStatus());
         logger.info("Users: {} ", SecurityContextUtils.serializeObject(kc.realms().realm(realm).users().list()));
         return true;
     }
@@ -152,6 +152,13 @@ public class AuthServiceImpl implements AuthService {
             realmRepr.setDefaultRoles(Arrays.asList(clientRoles));
             kc.realms().realm(realm).update(realmRepr);
         }
+    }
+
+    @Override
+    public String getSecretByClientId(String clientId) {
+        //make a call to KV store (vault)
+        //TODO
+        return "d686dc95-c1b9-4758-9036-e433e3ecb860";
     }
 
     private static PublicKey getPubKey(String publicK)

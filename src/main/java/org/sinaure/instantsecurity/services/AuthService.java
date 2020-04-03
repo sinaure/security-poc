@@ -25,4 +25,5 @@ public interface AuthService {
 	List<RoleRepresentation> getRoleRepresentationList(String[] defaultRoles);
 	void createRealm(Keycloak kc, RealmInstantApp realm);
 	void createClient(Keycloak kc, String realm, ClientRepresentation clientRepresentation, String[] defaultRoles);
+	String getSecretByClientId(String clientId);
 }

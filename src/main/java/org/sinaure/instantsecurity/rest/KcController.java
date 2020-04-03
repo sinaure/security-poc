@@ -14,6 +14,7 @@ import org.sinaure.instantsecurity.model.RealmInstantApp;
 import org.sinaure.instantsecurity.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,9 +29,6 @@ public class KcController {
   @Autowired
   @Qualifier("kc")
   private Keycloak kc;
-  @Autowired
-  @Qualifier("kc_lime")
-  private Keycloak kc_lime;
 
   @GetMapping(path = "/app/{app}/user/name")
   public ResponseEntity<String> getAuthorizedUserName(@PathVariable String app) {
@@ -80,10 +78,15 @@ public class KcController {
   }
   @PostMapping(path = "/instant/realm/{realmId}/client/{clientId}")
   public ResponseEntity<UserRepresentation> createUser(@RequestBody UserRepresentation userRepresentation, @PathVariable String clientId, @PathVariable String realmId ) {
-    if(authService.createUser(kc_lime,realmId,clientId, userRepresentation)){
-      ResponseEntity.ok(userRepresentation);
+    String secret = authService.getSecretByClientId(clientId);
+    if(authService.createUser(keycloakClient(realmId,clientId,secret),realmId,clientId, userRepresentation)){
+      return ResponseEntity.ok(userRepresentation);
     }
     return ResponseEntity.badRequest().body(new UserRepresentation());
+  }
+  public Keycloak keycloakClient(String realm,String clientId, String secret){
+    String localhost = "http://localhost:8081";
+    return  authService.getKeycloakClient(localhost, realm, clientId, secret);
   }
 
 }

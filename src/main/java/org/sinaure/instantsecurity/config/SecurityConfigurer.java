@@ -98,12 +98,5 @@ public class SecurityConfigurer extends ResourceServerConfigurerAdapter {
     String realm = "master";
     return  authService.getKeycloakUser(localhost, realm, client_id, admin, admin_password);
   }
-  @Bean(name = "kc_lime")
-  public Keycloak keycloakLime(){
-    String localhost = "http://localhost:8081";
-    String client_id = "lime";
-    String secret = "d686dc95-c1b9-4758-9036-e433e3ecb860";
-    String realm = "lime";
-    return  authService.getKeycloakClient(localhost, realm, client_id, secret);
-  }
+
 }
